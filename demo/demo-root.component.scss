@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  max-inline-size: 72rem;
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+}
+
+.demo__header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.375rem;
+}
+
+.demo__note {
+  margin: 0 0 0.75rem;
+  color: #6b7280;
+}
+
+.demo__campaigns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
+}
+
+.demo__main {
+  display: block;
+}

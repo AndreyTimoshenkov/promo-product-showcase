@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": { "analytics": false },
+  "newProjectRoot": "",
+  "projects": {
+    "demo": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "demo",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": "dist/demo",
+            "index": "demo/index.html",
+            "browser": "demo/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "styles": ["demo/styles.scss"]
+          },
+          "configurations": {
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": { "buildTarget": "demo:build:development", "port": 4300 }
+        }
+      }
+    }
+  }
+}

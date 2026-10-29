@@ -1,0 +1,180 @@
+@let rows__local = rows();
+@let is_loading__local = store.loading();
+
+<section class="promo-products">
+  <form
+    class="promo-products__filters"
+    [formGroup]="filtersForm"
+  >
+    <input
+      type="search"
+      formControlName="search"
+      placeholder="Название или артикул"
+      aria-label="Поиск по товарам акции"
+    />
+
+    <select
+      formControlName="sortBy"
+      aria-label="Сортировка"
+    >
+      @for (option of sortOptions; track option.value) {
+        <option [value]="option.value">{{ option.label }}</option>
+      }
+    </select>
+
+    <label class="promo-products__stock">
+      <input
+        type="checkbox"
+        formControlName="inStockOnly"
+      />
+      Только в наличии
+    </label>
+  </form>
+
+  <div class="promo-products__layout">
+    <aside
+      class="promo-products__tags"
+      aria-label="Фильтр по тегам"
+    >
+      @if (isTagsSkeleton()) {
+        @for (row of skeletonRows; track row) {
+          <span
+            class="skeleton-line"
+            aria-hidden="true"
+          ></span>
+        }
+      } @else {
+        <!-- Ошибка не заменяет список: отмеченные в адресе теги и их сброс должны оставаться доступны. -->
+        @if (store.tagsError()) {
+          <p role="alert">Не удалось загрузить теги</p>
+          <button
+            type="button"
+            (click)="retryTags()"
+          >
+            Повторить
+          </button>
+        }
+
+        <p
+          class="promo-products__tags-hint"
+          [id]="tagsHintId"
+        >
+          Нажатие переключает тег: выбран → исключён → не учитывается
+        </p>
+
+        <!-- Состояний три, поэтому не aria-pressed: оно различает только «нажат» и «не нажат». -->
+        @for (tag of tags(); track tag.id) {
+          <button
+            type="button"
+            class="tag"
+            [class.tag--included]="tag.status === ETagStatus.INCLUDED"
+            [class.tag--excluded]="tag.status === ETagStatus.EXCLUDED"
+            [attr.aria-describedby]="tagsHintId"
+            (click)="toggleTag(tag)"
+          >
+            {{ tag.name }}
+            @if (tag.count !== undefined) {
+              <span class="tag__count">{{ tag.count }}</span>
+            }
+            <span class="visually-hidden">, {{ tag.statusLabel }}</span>
+          </button>
+        }
+
+        @if (hasActiveTags()) {
+          <button
+            type="button"
+            (click)="resetTags()"
+          >
+            Сбросить теги
+          </button>
+        }
+      }
+    </aside>
+
+    <div class="promo-products__table">
+      <table [attr.aria-busy]="is_loading__local">
+        <thead>
+          <tr>
+            <th scope="col">Артикул</th>
+            <th scope="col">Товар</th>
+            <th scope="col">Цена</th>
+            <th scope="col">Цена по акции</th>
+            <th scope="col">Скидка</th>
+            <th scope="col">Остаток</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @if (isInitialLoading()) {
+            @for (row of skeletonRows; track row) {
+              <tr aria-hidden="true">
+                <td colspan="6"><span class="skeleton-line"></span></td>
+              </tr>
+            }
+          } @else {
+            <!-- При смене страницы прошлые строки остаются под полупрозрачной заливкой, а не исчезают:
+                 таблица не схлопывается и не прыгает по высоте на каждом запросе. -->
+            @for (row of rows__local; track row.id) {
+              <tr [class.is-stale]="is_loading__local">
+                <td>{{ row.sku }}</td>
+                <td>
+                  {{ row.name }}
+                  @if (row.isPinned) {
+                    <span class="badge">Закреплён</span>
+                  }
+                </td>
+                <td>
+                  <s>{{ row.regularPrice | currency: 'RUB' : 'symbol-narrow' : '1.2-2' : 'ru' }}</s>
+                </td>
+                <td>{{ row.promoPrice | currency: 'RUB' : 'symbol-narrow' : '1.2-2' : 'ru' }}</td>
+                <td>
+                  @if (row.discountPercent !== null) {
+                    −{{ row.discountPercent }}%
+                  }
+                </td>
+                <td [class.out-of-stock]="!row.stock">{{ row.stock }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+
+      @if (store.error() && !is_loading__local) {
+        <p role="alert">Не удалось загрузить товары акции.</p>
+        <button
+          type="button"
+          (click)="retryProducts()"
+        >
+          Повторить
+        </button>
+      } @else if (isEmpty()) {
+        <p>Ничего не нашлось. Попробуйте изменить фильтры.</p>
+      }
+
+      <!-- Пагинация остаётся на месте во время загрузки: иначе выдача прыгает на каждой смене страницы. -->
+      @if (totalPages() > 1) {
+        <nav
+          class="pagination"
+          aria-label="Страницы"
+          [class.invisible]="is_loading__local"
+        >
+          <button
+            type="button"
+            [disabled]="currentPage() === 1"
+            (click)="changePage(currentPage() - 1)"
+          >
+            Назад
+          </button>
+          <span>{{ currentPage() }} из {{ totalPages() }}</span>
+          <button
+            type="button"
+            [disabled]="currentPage() === totalPages()"
+            (click)="changePage(currentPage() + 1)"
+          >
+            Вперёд
+          </button>
+        </nav>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,149 @@
+:host {
+  display: block;
+}
+
+.promo-products__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-block-end: 1rem;
+}
+
+// Чекбокс по умолчанию стоит на базовой линии текста и съезжает вниз относительно подписи.
+.promo-products__stock {
+  display: inline-flex;
+  gap: 0.375rem;
+  align-items: center;
+  cursor: pointer;
+
+  input {
+    margin: 0;
+  }
+}
+
+.promo-products__layout {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+  gap: 1.5rem;
+
+  @media (width < 48rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.promo-products__tags {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.promo-products__table {
+  min-width: 0;
+  overflow-x: auto;
+  // Горизонтальная полоса прокрутки на узком экране ложится поверх низа контейнера — под ней пагинация.
+  padding-block-end: 1rem;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.5rem 0.75rem;
+    border-block-end: 1px solid #e5e7eb;
+    text-align: start;
+    white-space: nowrap;
+  }
+}
+
+.skeleton-line {
+  display: block;
+  inline-size: 100%;
+  block-size: 1.25rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(90deg, #eef0f3 25%, #f7f8fa 50%, #eef0f3 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s linear infinite;
+}
+
+// Прошлая страница остаётся под полупрозрачной заливкой, пока грузится следующая: таблица не прыгает по высоте.
+.is-stale {
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+// Пагинация держит место во время загрузки, но не принимает кликов: `visibility` выключает и их.
+.invisible {
+  visibility: hidden;
+}
+
+.promo-products__tags-hint {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+// Текст для скринридера: на экране состояние передают цвет и зачёркивание.
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tag {
+  display: inline-flex;
+  gap: 0.375rem;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: none;
+  cursor: pointer;
+}
+
+.tag--included {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.tag--excluded {
+  border-color: #dc2626;
+  background: #fee2e2;
+  text-decoration: line-through;
+}
+
+.tag__count {
+  color: #6b7280;
+  font-size: 0.75em;
+}
+
+.badge {
+  margin-inline-start: 0.5rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  background: #fef3c7;
+  font-size: 0.75em;
+}
+
+.out-of-stock {
+  color: #dc2626;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-block-start: 1rem;
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "include": ["demo/**/*.ts", "src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts", "src/test-setup.ts"]
+}

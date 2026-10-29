@@ -1,0 +1,17 @@
+<header class="demo__header">
+  <h1>Товары промо-акции</h1>
+  <p class="demo__note">
+    Демо-стенд: данные отдаёт перехватчик HTTP в браузере, настоящего бэкенда нет. Код для проверки — в
+    <code>src/</code>.
+  </p>
+
+  <nav class="demo__campaigns">
+    <a routerLink="/promo-campaigns/summer-sale/products">Летняя распродажа</a>
+    <a routerLink="/promo-campaigns/back-to-school/products">Снова в школу</a>
+    <a routerLink="/promo-campaigns/broken/products">Акция с ошибкой бэкенда</a>
+  </nav>
+</header>
+
+<main class="demo__main">
+  <router-outlet />
+</main>
